@@ -37,6 +37,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 NPM_URL = 'https://registry.npmjs.org{}'
 PAGE = '/-/npm/v1/security/advisories?perPage=100&page=0'
@@ -109,6 +110,10 @@ class NpmDataSource(DataSource):
 
             impacted_purls = _versions_to_purls(package_name, impacted_versions)
             resolved_purls = _versions_to_purls(package_name, resolved_versions)
+            vuln_reference = [VulnerabilityReferenceUnit(
+                    url=NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}'),
+                    reference_id=record['id'] 
+                )]
 
             for cve_id in record.get('cves') or ['']:
                 advisories.append(Advisory(
@@ -116,9 +121,8 @@ class NpmDataSource(DataSource):
                     cve_id=cve_id,
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,
-                    reference_urls=[NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}')],
+                    vuln_references=vuln_reference,
                 ))
-
         return advisories
 
     def added_advisories(self) -> Set[Advisory]:
