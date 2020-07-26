@@ -37,7 +37,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 NPM_URL = "https://registry.npmjs.org{}"
 PAGE = "/-/npm/v1/security/advisories?perPage=100&page=0"
@@ -108,7 +108,7 @@ class NpmDataSource(DataSource):
             impacted_purls = _versions_to_purls(package_name, impacted_versions)
             resolved_purls = _versions_to_purls(package_name, resolved_versions)
             vuln_reference = [
-                VulnerabilityReferenceUnit(
+                Reference(
                     url=NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}'),
                     reference_id=record["id"],
                 )
